@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
-import { OneComponent } from './one/one.component';
+import { LoginComponent } from './components/login/login.component';
+import { PosterListComponent } from './components/poster-list/poster-list.component';
+import { GradingComponent } from './components/grading/grading.component';
 
 export const routes: Routes = [
-    { path: '', component: OneComponent },
-    { path: 'about', component: OneComponent },
-    { path: 'projects', component: OneComponent },
-    { path: 'contact', component: OneComponent },
-    { path: '**', redirectTo: '', pathMatch: 'full' } // Redirect unknown paths to home
-  ];
+  { path: '', component: LoginComponent },
+  { path: 'posters', component: PosterListComponent },
+  { path: 'grading/:id', component: GradingComponent },
+  { path: '**', redirectTo: '', pathMatch: 'full' } // Redirect invalid routes
+];

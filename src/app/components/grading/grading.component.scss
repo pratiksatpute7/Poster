@@ -1,0 +1,21 @@
+.grading-card {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Container for tick marks */
+.slider-marks {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: -10px; /* Adjust position */
+}
+
+/* Style for individual tick marks */
+.tick {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+}
