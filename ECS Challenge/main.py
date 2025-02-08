@@ -1,38 +1,45 @@
-from ECSFacultyDataDump import get_ecs_dump_data
+import pandas as pd
 import Judge
-from Poster import load_posters_from_csv
+import Poster
+from Poster import load_posters_from_csv, assign_judges_to_posters, generate_assignment_matrix, generate_extended_judge_list, generate_extended_poster_list
 
-file_path = "Example_list_judges.xlsx"
-df_judges = Judge.load_judges_from_excel(file_path)
-
-# Create and display judges list
-judges_list = Judge.create_judges_list(df_judges)
-Judge.display_judges(judges_list)
-
-file_path = "Sample_input_abstracts.xlsx"
-poster_list = load_posters_from_csv(file_path)
-
-
-csv_filename = "faculty_profiles_with_emails.csv"  # Ensure this matches your saved CSV filename
-faculty_list = get_ecs_dump_data(csv_filename)
-
-
-
-def update_judges_with_details(judges_list, details_list):
-    for judge in judges_list:
-        if(judge.judge_id == 3):
-            print("hi")
-        for detail in details_list:
-            if judge.first_name == detail["First Name"] or judge.last_name == detail["Last Name"]:
-                print(judge.first_name)
-                judge.profile_details = detail.get("Entry Content", "")
-                judge.emailID = detail.get("Email", "")
-                break
+def main():
+    """
+    Main function to load the judge and poster data, assign judges to posters, 
+    generate assignments, and save the results to an Excel file.
+    """
+    # Define file paths for judges and posters CSV files
+    judges_file = "faculty_profiles_with_emails.csv"  # Ensure this matches your file
+    posters_file = "Sample_input_abstracts.csv"  # Ensure this matches your file
     
-    return judges_list
+    # Load judge data from CSV
+    df_judges = pd.read_csv(judges_file)
+    print("columns in df judges : "+df_judges.columns)
+    
+    # Create the list of judges
+    judges_list = Judge.create_judges_list(df_judges)
+    Judge.display_judges(judges_list)  # Optionally display the judges list
+    
+    # Load poster data
+    poster_list = load_posters_from_csv(posters_file)
+    posters_df = pd.DataFrame(poster_list)
 
-judges_list = update_judges_with_details(judges_list, faculty_list)
+    judge_assignments, poster_assignments = assign_judges_to_posters(df_judges, posters_df)
 
-Judge.display_judges(judges_list)
+    # Generate extended judge and poster lists based on assignments
+    extended_judge_list = generate_extended_judge_list(df_judges, judge_assignments)
+    extended_poster_list = generate_extended_poster_list(poster_list, poster_assignments)
 
-print(judges_list[37].first_name)
+    # Generate assignment matrix for saving
+    assignment_matrix = generate_assignment_matrix(df_judges, poster_assignments)
+
+    # Save the results to an Excel file
+    with pd.ExcelWriter('judge_assignments_output.xlsx') as writer:
+        extended_judge_list.to_excel(writer, sheet_name='Judge Assignments', index=False)
+        extended_poster_list.to_excel(writer, sheet_name='Poster Assignments', index=False)
+        assignment_matrix.to_excel(writer, sheet_name='Assignment Matrix', index=False)
+
+    print("Assignment completed and output saved to 'judge_assignments_output.xlsx'.")
+
+if __name__ == "__main__":
+    main()

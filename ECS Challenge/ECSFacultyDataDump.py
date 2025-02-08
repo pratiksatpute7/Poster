@@ -26,9 +26,3 @@ def get_ecs_dump_data(csv_filename):
         print(f"An error occurred: {e}")
         return []
 
-# Example usage
-csv_filename = "faculty_profiles.csv"  # Ensure this matches your saved CSV filename
-faculty_list = get_ecs_dump_data(csv_filename)
-
-# Print the list of dictionaries
-print(faculty_list)
