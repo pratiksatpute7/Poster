@@ -18,7 +18,7 @@ def main():
     
     # Create the list of judges
     judges_list = Judge.create_judges_list(df_judges)
-    Judge.display_judges(judges_list)  # Optionally display the judges list
+    # Judge.display_judges(judges_list)  # Optionally display the judges list
     
     # Load poster data
     poster_list = load_posters_from_csv(posters_file)
