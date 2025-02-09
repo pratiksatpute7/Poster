@@ -33,3 +33,18 @@ def load_posters_from_csv(file_path):
         )
         posters_list.append(poster)
     return posters_list
+
+def load_posters_from_excel(file_path, sheet_name="Sheet1"):
+    df = pd.read_excel(file_path, sheet_name=sheet_name)
+    posters_list = []
+    for _, row in df.iterrows():
+        poster = Poster(
+            poster_id=row["Poster #"],
+            title=row["Title"],
+            abstract=row["Abstract"],
+            advisor_first=row["Advisor FirstName"].strip(),
+            advisor_last=row["Advisor LastName"].strip(),
+            program=row["Program"]
+        )
+        posters_list.append(poster)
+    return posters_list

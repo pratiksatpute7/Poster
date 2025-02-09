@@ -31,4 +31,4 @@ csv_filename = "faculty_profiles.csv"  # Ensure this matches your saved CSV file
 faculty_list = get_ecs_dump_data(csv_filename)
 
 # Print the list of dictionaries
-print(faculty_list)
+# print(faculty_list)

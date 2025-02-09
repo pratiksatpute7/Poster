@@ -15,24 +15,6 @@ class Judge:
         self.key = ''
         self.competitionID = 0
 
-    def can_review(self, poster):
-        """
-        Check if the judge can review a given poster based on constraints.
-        """
-        # Constraint: Each judge can review at most 6 posters
-        if len(self.assigned_posters) >= 6:
-            return False
-
-        # Constraint: Judge availability should match poster time slot
-        if poster.time_slot not in [self.availability, "both"]:
-            return False
-
-        # Constraint: A judge cannot review their own student's poster (advisor conflict)
-        if poster.advisor_name in self.name:
-            return False
-
-        return True
-
     def assign_poster(self, poster_id):
         """
         Assign a poster to the judge.
@@ -68,10 +50,10 @@ def load_judges_from_excel(file_path, sheet_name="Sheet1"):
 
 
 
-def display_judges(judges_list):
-    print(f"{'ID':<5} {'First Name':<15} {'Last Name':<15} {'Department':<10} {'Availability':<10} {'Email ID':<25}")
-    print("-" * 120)
-    for judge in judges_list:
-        print(f"{judge.judge_id:<5} {judge.first_name:<15} {judge.last_name:<15} {judge.department:<10} {judge.availability:<10} {judge.emailID:<25}")
+# def display_judges(judges_list):
+#     print(f"{'ID':<5} {'First Name':<15} {'Last Name':<15} {'Department':<10} {'Availability':<10} {'Email ID':<25}")
+#     print("-" * 120)
+#     for judge in judges_list:
+#         print(f"{judge.judge_id:<5} {judge.first_name:<15} {judge.last_name:<15} {judge.department:<10} {judge.availability:<10} {judge.emailID:<25}")
 
 
