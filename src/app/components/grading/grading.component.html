@@ -1,16 +1,7 @@
-<mat-card class="grading-card">
+<!-- <mat-card class="grading-card">
   <h2>{{ posterTitle }}</h2>
 
-  <!-- Slider with discrete steps -->
-<!--   <mat-slider
-    [formControl]="score"
-    min="1"
-    max="5"
-    step="1"
-    tickInterval="1"
-    thumbLabel
-    [displayWith]="formatLabel"> 
-  </mat-slider>-->
+
   <mat-slider min="1" max="10" step="1000" showTickMarks discrete [displayWith]="formatLabel">
     <input matSliderThumb>
   </mat-slider>
@@ -20,3 +11,16 @@
 
   <button mat-raised-button color="primary" (click)="submitScore()">Submit</button>
 </mat-card>
+ -->
+ <h2>Grade a Poster</h2>
+    
+ <select [(ngModel)]="posterId">
+   <option *ngFor="let poster of posters()" [value]="poster.id">
+     {{ poster.title }}
+   </option>
+ </select>
+
+ <input [(ngModel)]="score" placeholder="Score (1-10)" type="number" min="1" max="10" />
+
+ <button (click)="submitGrade()">Submit Grade</button>
+ <p *ngIf="message">{{ message }}</p>

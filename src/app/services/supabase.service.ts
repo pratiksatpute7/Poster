@@ -35,4 +35,20 @@ export class SupabaseService {
       return { success: false, message: 'Invalid secret code' };
     }
   }
+  async getPosters() {
+    return this.supabase.from('posters').select('*');
+  }
+  
+  // Submit a grade
+  async addPosterGrade(judgeId: number, posterId: number, score: number) {
+    const { error } = await this.supabase.from('poster_grades').insert([
+      { judge_id: judgeId, poster_id: posterId, score: score }
+    ]);
+  
+    if (error) {
+      console.error('Grading error:', error.message);
+      return { success: false, message: 'Failed to submit grade' };
+    }
+    return { success: true, message: 'Grade submitted successfully' };
+  }
 }

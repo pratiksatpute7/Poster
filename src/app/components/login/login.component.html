@@ -1,15 +1,14 @@
 <mat-card class="login-card">
-    <h2>Judge Login</h2>
-    <mat-form-field appearance="outline">
-      <mat-label>Judge Id</mat-label>
-      <input matInput type="number" [(ngModel)]="number" />
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Secret Code</mat-label>
-      <input matInput type="password" [(ngModel)]="secretCode" />
-    </mat-form-field>
-  
-    <button mat-raised-button color="primary" (click)="login()">Login</button>
-  </mat-card>
-  
+  <h2>Judge Login</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>Judge Id</mat-label>
+    <input matInput type="number" [(ngModel)]="judgeId" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Secret Code</mat-label>
+    <input matInput type="password" [(ngModel)]="secretCode" />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="login()">Login</button>
+</mat-card>

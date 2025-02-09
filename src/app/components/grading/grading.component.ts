@@ -1,49 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, CommonModule } from '@angular/common';
-
+import { SupabaseService } from '../../services/supabase.service';
 @Component({
   standalone: true,
   selector: 'app-grading',
   templateUrl: './grading.component.html',
   styleUrls: ['./grading.component.scss'],
-  imports: [ReactiveFormsModule, MatSliderModule, MatCardModule, MatButtonModule, NgIf, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, MatSliderModule, MatCardModule, MatButtonModule, NgIf, CommonModule],
+  providers: [SupabaseService]
 })
-export class GradingComponent implements OnInit {
-  posterTitle: string = '';
-  score = new FormControl(3); // Default value is 3
+export class GradingComponent {
+  
+  posters = signal<any[]>([]);
+  posterId = signal<number | null>(null);
+  score = signal<number | null>(null);
+  comments = signal('');
+  message = signal('');
+  judgeId = signal<number | null>(null);
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private supabaseService: SupabaseService) {}
 
-  ngOnInit() {
-    const posterId = this.route.snapshot.paramMap.get('id');
-    this.posterTitle = `Poster ${posterId}`;
-  }
-
-  // Custom thumb label formatting logic
-  formatLabel(value: number): string {
-    // Example: You can apply custom logic here. For now, we will just return the number as-is.
-    // Modify this to format the value based on the business logic you need.
-    if (value === 5) {
-      return '5';
-    } else if (value === 4) {
-      return '4';
-    } else if (value === 3) {
-      return '3';
-    } else if (value === 2) {
-      return '2';
-    } else {
-      return '1';
+  async ngOnInit() {
+    this.judgeId.set(Number(localStorage.getItem('loggedInJudge')));
+    if (!this.judgeId()) {
+      this.message.set('You must be logged in to grade posters.');
+      return;
     }
+
+    const { data, error } = await this.supabaseService.getPosters();
+    if (!error) this.posters.set(data);
   }
 
-  submitScore() {
-    console.log(`Submitted score: ${this.score.value}`);
-    alert(`Submitted score: ${this.score.value}`);
-    this.router.navigate(['/posters']);
+  async submitGrade() {
+    if (!this.judgeId() || !this.posterId() || !this.score()) {
+      this.message.set('Please fill all fields.');
+      return;
+    }
+
+    const result = await this.supabaseService.addPosterGrade(this.judgeId()!, this.posterId()!, this.score()!);
+    this.message.set(result.message);
   }
 }

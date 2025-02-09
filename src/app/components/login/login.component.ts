@@ -35,5 +35,4 @@ export class LoginComponent {
       this.router.navigate(['/poster-list']); // Redirect to dashboard
     }
   }
-  
 }
