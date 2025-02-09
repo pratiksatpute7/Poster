@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-
+import { SupabaseService } from '../../services/supabase.service';
 @Component({
   standalone: true,
   selector: 'app-poster-list',
@@ -11,20 +11,18 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./poster-list.component.scss'],
   imports:  [CommonModule, MatCardModule, MatButtonModule]
 })
-export class PosterListComponent {
-  posters = [
-    { id: 1, title: 'Poster 1', abstract: 'Abstract about topic 1' },
-    { id: 2, title: 'Poster 2', abstract: 'Abstract about topic 2' },
-    { id: 3, title: 'Poster 3', abstract: 'Abstract about topic 3' }
-  ];
+export class PosterListComponent implements OnInit {
+  posters: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private supabaseService: SupabaseService, private router: Router) {}
 
-  gradePoster(id: number) {
-    this.router.navigate(['/grading', id]);
+  async ngOnInit() {
+    const judge = JSON.parse(localStorage.getItem('judge') || '{}');
+    const { data } = await this.supabaseService.getPostersForJudge(judge.poster_day_id);
+    this.posters = data || [];
   }
 
-  submitScores() {
-    alert('Scores submitted successfully!');
+  gradePoster(posterId: number) {
+    this.router.navigate(['/grading', posterId]);
   }
 }

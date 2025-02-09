@@ -15,24 +15,16 @@ import { SupabaseService } from '../../services/supabase.service';
   providers: [SupabaseService]
 })
 export class LoginComponent {
-  judgeId = signal<number | null>(null);
-  secretCode = signal('');
-  loginMessage = signal('');
-
+  code: string = '';
   constructor(private supabaseService: SupabaseService, private router: Router) {}
 
   async login() {
-    if (!this.judgeId() || !this.secretCode()) {
-      this.loginMessage.set('Please enter both fields.');
-      return;
-    }
-
-    const result = await this.supabaseService.loginJudge(this.judgeId()!, this.secretCode());
-    this.loginMessage.set(result.message);
-
-    if (result.success) {
-      localStorage.setItem('loggedInJudge', this.judgeId()!.toString());
-      this.router.navigate(['/poster-list']); // Redirect to dashboard
+    const { data, error } = await this.supabaseService.login(this.code);
+    if (data) {
+      localStorage.setItem('judge', JSON.stringify(data));
+      this.router.navigate(['/posters']);
+    } else {
+      alert('Invalid Code');
     }
   }
 }

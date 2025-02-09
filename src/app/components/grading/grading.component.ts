@@ -15,34 +15,20 @@ import { SupabaseService } from '../../services/supabase.service';
   providers: [SupabaseService]
 })
 export class GradingComponent {
-  
-  posters = signal<any[]>([]);
-  posterId = signal<number | null>(null);
-  score = signal<number | null>(null);
-  comments = signal('');
-  message = signal('');
-  judgeId = signal<number | null>(null);
+  score: number = 1;
+  posterId!: number;
 
-  constructor(private supabaseService: SupabaseService) {}
-
-  async ngOnInit() {
-    this.judgeId.set(Number(localStorage.getItem('loggedInJudge')));
-    if (!this.judgeId()) {
-      this.message.set('You must be logged in to grade posters.');
-      return;
-    }
-
-    const { data, error } = await this.supabaseService.getPosters();
-    if (!error) this.posters.set(data);
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private supabaseService: SupabaseService
+  ) {
+    this.posterId = Number(this.route.snapshot.paramMap.get('id'));
   }
 
   async submitGrade() {
-    if (!this.judgeId() || !this.posterId() || !this.score()) {
-      this.message.set('Please fill all fields.');
-      return;
-    }
-
-    const result = await this.supabaseService.addPosterGrade(this.judgeId()!, this.posterId()!, this.score()!);
-    this.message.set(result.message);
+    const judge = JSON.parse(localStorage.getItem('judge') || '{}');
+    await this.supabaseService.submitGrade(judge.judge, this.posterId, judge.poster_day_id, this.score);
+    this.router.navigate(['/posters']);
   }
 }

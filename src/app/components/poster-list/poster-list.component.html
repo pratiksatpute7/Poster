@@ -1,12 +1,5 @@
-<mat-card *ngFor="let poster of posters" class="poster-card">
-    <h3>{{ poster.title }}</h3>
-    <p>{{ poster.abstract }}</p>
-    <button mat-raised-button color="accent" (click)="gradePoster(poster.id)">
-      Grade Poster
-    </button>
-  </mat-card>
-  
-  <button mat-raised-button color="primary" class="submit-btn" (click)="submitScores()">
-    Submit All Scores
-  </button>
-  
+<div *ngFor="let poster of posters">
+  <h3>{{ poster.title }}</h3>
+  <p>{{ poster.abstract }}</p>
+  <button (click)="gradePoster(poster.id)">Grade</button>
+</div>

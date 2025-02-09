@@ -16,39 +16,25 @@ export class SupabaseService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  // Judge Login - Validate Secret Code
-  async loginJudge(judgeId: number, enteredSecret: string) {
+  async login(code: string) {
     const { data, error } = await this.supabase
-      .from('judgesecrets')
-      .select('secret_code')
-      .eq('judge_id', judgeId)
-      .single(); // Get a single record
-
-    if (error) {
-      console.error('Login error:', error.message);
-      return { success: false, message: 'Judge not found' };
-    }
-
-    if (data.secret_code === enteredSecret) {
-      return { success: true, message: 'Login successful' };
-    } else {
-      return { success: false, message: 'Invalid secret code' };
-    }
+      .from('judgeusers')
+      .select('*')
+      .eq('code', code)
+      .single();
+    return { data, error };
   }
-  async getPosters() {
-    return this.supabase.from('posters').select('*');
+
+  async getPostersForJudge(poster_day_id: number) {
+    return this.supabase
+      .from('posters')
+      .select('*')
+      .eq('poster_day_id', poster_day_id);
   }
-  
-  // Submit a grade
-  async addPosterGrade(judgeId: number, posterId: number, score: number) {
-    const { error } = await this.supabase.from('poster_grades').insert([
-      { judge_id: judgeId, poster_id: posterId, score: score }
-    ]);
-  
-    if (error) {
-      console.error('Grading error:', error.message);
-      return { success: false, message: 'Failed to submit grade' };
-    }
-    return { success: true, message: 'Grade submitted successfully' };
+
+  async submitGrade(judge_id: number, poster_id: number, poster_day_id: number, score: number) {
+    return this.supabase
+      .from('grades')
+      .upsert([{ judge_id, poster_id, poster_day_id, score }]);
   }
 }

@@ -1,27 +1,17 @@
+// src/app/app.component.ts
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { GradingComponent } from './components/grading/grading.component';
-import { NgIf, CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
 @Component({
-  standalone: true,
   selector: 'app-root',
   template: `
-      <nav>
-      <a routerLink="/login">Login</a> |
-      <a routerLink="/posters" *ngIf="isLoggedIn">Grade Posters</a> |
-      <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+    <nav>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/posters">Posters</a>
     </nav>
-  <router-outlet></router-outlet>`,
-  imports: [RouterOutlet, GradingComponent, NgIf, CommonModule]
+    <router-outlet></router-outlet>
+  `,
+  standalone: true,
+  imports: [RouterModule]
 })
-export class AppComponent {
-  isLoggedIn = localStorage.getItem('loggedInJudge') !== null;
-
-  constructor(private router: Router) {}
-
-  logout() {
-    localStorage.removeItem('loggedInJudge');
-    this.isLoggedIn = false;
-    this.router.navigate(['/login']);
-  }
-}
+export class AppComponent {}
