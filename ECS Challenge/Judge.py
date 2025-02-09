@@ -1,3 +1,5 @@
+import random
+import string
 import pandas as pd
 
 
@@ -12,7 +14,7 @@ class Judge:
         self.assigned_posters = []  # List of assigned poster IDs # List of assigned poster IDs
         self.profile_details = ''
         self.emailID = ''
-        self.key = ''
+        self.code = generate_unique_code()
         self.competitionID = 0
 
     def assign_poster(self, poster_id):
@@ -48,7 +50,9 @@ def load_judges_from_excel(file_path, sheet_name="Sheet1"):
     return df
 
 
-
+def generate_unique_code(length=6):
+    """Generate a random 6-character alphanumeric code."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 # def display_judges(judges_list):
 #     print(f"{'ID':<5} {'First Name':<15} {'Last Name':<15} {'Department':<10} {'Availability':<10} {'Email ID':<25}")
