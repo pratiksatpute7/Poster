@@ -1,29 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   standalone: true,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [FormsModule, MatCardModule, MatInputModule, MatButtonModule]
+  imports: [FormsModule, MatCardModule, MatInputModule, MatButtonModule],
+  providers: [SupabaseService]
 })
 export class LoginComponent {
-  email: string = '';
-  secretCode: string = '';
+  judgeId = signal<number | null>(null);
+  secretCode = signal('');
+  loginMessage = signal('');
 
-  constructor(private router: Router) {}
+  constructor(private supabaseService: SupabaseService, private router: Router) {}
 
-  login() {
-    if (this.email && this.secretCode) {
-      localStorage.setItem('judgeEmail', this.email);
-      this.router.navigate(['/posters']);
-    } else {
-      alert('Please enter valid credentials');
+  async login() {
+    if (!this.judgeId() || !this.secretCode()) {
+      this.loginMessage.set('Please enter both fields.');
+      return;
+    }
+
+    const result = await this.supabaseService.loginJudge(this.judgeId()!, this.secretCode());
+    this.loginMessage.set(result.message);
+
+    if (result.success) {
+      localStorage.setItem('loggedInJudge', this.judgeId()!.toString());
+      this.router.navigate(['/poster-list']); // Redirect to dashboard
     }
   }
+  
 }

@@ -1,5 +1,10 @@
+
+
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://osumuoaptolaxtzppegj.supabase.co'; // Replace with your actual Supabase URL
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zdW11b2FwdG9sYXh0enBwZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkwMzc5MzgsImV4cCI6MjA1NDYxMzkzOH0.onV3HKYPsfC2AAItklWLpkcGz4HHGJJEIjMsujGiuBY'; // Replace with your actual Supabase anon key
 
 @Injectable({
   providedIn: 'root',
@@ -8,11 +13,9 @@ export class SupabaseService {
   private supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(
-      'https://osumuoaptolaxtzppegj.supabase.co', // Replace with your Supabase URL
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zdW11b2FwdG9sYXh0enBwZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkwMzc5MzgsImV4cCI6MjA1NDYxMzkzOH0.onV3HKYPsfC2AAItklWLpkcGz4HHGJJEIjMsujGiuBY' // Replace with your Supabase anon key
-    );
+    this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
+
   // Judge Login - Validate Secret Code
   async loginJudge(judgeId: number, enteredSecret: string) {
     const { data, error } = await this.supabase
